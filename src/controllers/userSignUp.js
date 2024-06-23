@@ -17,24 +17,28 @@ async function userSignUpController(req, res) {
 
         const user = await User.findOne({ email });
         if (user) {
-            throw new Error(`User already exists`);
+            throw new Error(`Email ${email} already exists`);
         }
 
-        var hashPassword = await bcrypt.hashSync(password, salt);
+        const hashPassword = await bcrypt.hashSync(password, salt);
         if (!hashPassword) {
             throw new Error(`Something is wrong`);
         }
 
         const payload = {
             ...req.body,
+            role: "GENERAL",
             password: hashPassword
         }
 
         const userData = new User(payload);
-        const saveUser = userData.save();
+        const saveUser = await userData.save();
+
+        const userResponse = saveUser.toObject(); // Convert to plain JavaScript object
+        delete userResponse.password; // Remove the password field
 
         res.status(201).json({
-            data: saveUser,
+            data: userResponse,
             error: false,
             success: true,
             message: "User created successfully!"
