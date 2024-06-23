@@ -1,12 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config()
+const connectDB = require('./config/db')
+
 
 const app = express();
 app.use(cors());
 
-const port = 8080 || process.env.PORT;
+const port = process.env.PORT || 8080;
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+connectDB().then(() => {
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`)
+    })
+});
