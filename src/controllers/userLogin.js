@@ -22,8 +22,7 @@ async function userLoginController(req, res) {
             if (checkPassword) {
                 const payload = {
                     _id: user._id,
-                    email: user.email,
-                    role: user.role
+                    email: user.email
                 }
                 const token = await jwt.sign(payload, process.env.ACCESS_TOKEN_PRIVATE_KEY, { expiresIn: 60 * 60 });
 
@@ -32,7 +31,7 @@ async function userLoginController(req, res) {
                     secure: true
                 }
                 res.cookie("token", token, tokenOption).status(200).json({
-                    message: "Login success!",
+                    message: "Login successfully!",
                     data: token,
                     error: false,
                     success: true
