@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require("dotenv").config()
 
-async function userSignInController(req, res) {
+async function userLoginController(req, res) {
     try {
         const { email, password } = req.body;
         if (!email) {
@@ -15,7 +15,7 @@ async function userSignInController(req, res) {
 
         const user = await User.findOne({ email });
         if (!user) {
-            throw new Error(`User not found`);
+            throw new Error(`Email or password is incorrect`);
         }
         else {
             const checkPassword = bcrypt.compareSync(password, user.password);
@@ -31,7 +31,7 @@ async function userSignInController(req, res) {
                     httpOnly: true,
                     secure: true
                 }
-                res.cookie("token", token, tokenOption).json({
+                res.cookie("token", token, tokenOption).status(200).json({
                     message: "Login success!",
                     data: token,
                     error: false,
@@ -53,4 +53,4 @@ async function userSignInController(req, res) {
     }
 }
 
-module.exports = userSignInController;
+module.exports = userLoginController;
